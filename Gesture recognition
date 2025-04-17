@@ -1,0 +1,16 @@
+void detectGesture(int ax, int ay, int az) {
+  static bool nodded = false;
+  static bool shook = false;
+
+  if (az > 15000 && !nodded) {
+    Serial.println("Nod detected: Accept call");
+    BT.println("CALL_ACCEPT");
+    nodded = true;
+    shook = false;
+  } else if (ax > 15000 && !shook) {
+    Serial.println("Head shake detected: Reject call");
+    BT.println("CALL_REJECT");
+    shook = true;
+    nodded = false;
+  }
+}
