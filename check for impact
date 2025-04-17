@@ -1,0 +1,24 @@
+void loop() {
+  int16_t ax, ay, az, gx, gy, gz;
+  mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+
+  // Detect nods (Z axis tilt for yes, X axis for no)
+  detectGesture(ax, ay, az);
+
+  // Detect impact
+  if (abs(ax) > thresholdImpact || abs(ay) > thresholdImpact || abs(az) > thresholdImpact) {
+    accidentDetected = true;
+    impactTime = millis();
+    Serial.println("Impact detected!");
+  }
+
+  // Check if user responds
+  if (accidentDetected) {
+    if (millis() - impactTime > 5000) {
+      sendSOS();
+      accidentDetected = false;
+    }
+  }
+
+  delay(100);
+}
